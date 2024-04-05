@@ -1,0 +1,52 @@
+{
+    "name": "ROS2_navio",
+    "privileged": true,
+    "remoteUser": "docker",
+//    "image": "ros/armv7:latest",
+     "build": {
+         "dockerfile": "Dockerfile",
+         "args": {
+             "USER_ID": "${localEnv:UID:1000}",
+             "GROUP_ID": "${localEnv:GID:1000}"
+         }
+     },
+    "workspaceFolder": "/home/docker/ws/src/navio2_ros",
+    "workspaceMount": "source=${localWorkspaceFolder}/navio2_ros,target=/home/docker/ws/src/navio2_ros,type=bind",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-vscode.cpptools",
+                "ms-vscode.cmake-tools",
+                "ms-vscode.cpptools-themes",
+                "twxs.cmake",
+                "donjayamanne.python-extension-pack",
+                // "eamodio.gitlens",
+                "ms-iot.vscode-ros",
+                "github.copilot"
+            ]
+        }
+    },
+    "containerEnv": {
+        "DISPLAY": "${localEnv:DISPLAY}",
+        "ROS_LOCALHOST_ONLY": "1",
+        "ROS_DOMAIN_ID": "42"
+    },
+    "runArgs": [
+//        "--net=host", // incompatible with Clion
+//        "--platform=linux/arm/v7",
+        "-e",
+        "DISPLAY=${env:DISPLAY}"
+    ],
+//    postAttachCommand: "source /opt/ros/humble/setup.bash && source /home/docker/ws/install/local_setup.sh",
+    "mounts": [
+        "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind,consistency=cached",
+        "source=/dev/dri,target=/dev/dri,type=bind,consistency=cached",
+//        "source=${localWorkspaceFolder}/ws/build,target=/home/docker/ws/build,type=bind",
+//        "source=${localWorkspaceFolder}/ws/install,target=/home/docker/ws/install,type=bind",
+//        "source=${localWorkspaceFolder}/ws/log,target=/home/docker/ws/log,type=bind",
+//        "source=${localWorkspaceFolder}/config,target=/config,type=bind"
+    ],
+//    "postCreateCommand": ". ~/px4_ros2_com_1_13/install/local_setup.sh && . ~/ws/install/local_setup.sh"
+    //  && sudo rosdep update && sudo rosdep install --from-paths src --ignore-src -y
+    //  && sudo chown -R USERNAME /home/ws/"
+}

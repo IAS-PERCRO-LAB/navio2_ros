@@ -1,0 +1,13 @@
+#!/usr/bin/bash
+
+# Mock cmake, while sourcing ROS first. Useful in Dev Containers.
+# Author: Michael Mugnai
+
+# Source ROS
+source /opt/ros/humble/setup.bash
+
+# Other local workspaces
+source /home/docker/ws/install/local_setup.bash 2>/dev/null || true
+
+# Run cmake
+cmake "$@"
