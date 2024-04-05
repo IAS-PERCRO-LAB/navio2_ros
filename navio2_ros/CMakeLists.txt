@@ -13,7 +13,9 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 
-add_executable(sensors src/sensors_node.cpp)
+include_directories(include)
+
+add_executable(sensors src/sensors_node.cpp src/sensors.cpp)
 ament_target_dependencies(sensors rclcpp std_msgs)
 
 install(TARGETS
