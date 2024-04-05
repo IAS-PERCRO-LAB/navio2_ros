@@ -1,4 +1,5 @@
 FROM ros:humble-ros-core
+# Use ros:humble-ros-base if you want colcon too!
 
 ARG USER=docker
 ARG USER_ID=1000
