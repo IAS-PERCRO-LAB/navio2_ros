@@ -2,16 +2,19 @@
 #define NAVIO2_ROS_SENSORS_H
 
 #include "rclcpp/rclcpp.hpp"
-#include "std_msgs/msg/string.hpp"
+#include "sensor_msgs/msg/imu.hpp"
+
+#include "navio2_ros/imu.h"
 
 class NavioSensors : public rclcpp::Node {
 public:
     NavioSensors();
 
 private:
+    Navio2::Imu imu_mpu_;
+
     rclcpp::TimerBase::SharedPtr timer_;
-    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_;
-    size_t count_;
+    rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr publisher_imu_mpu_;
 
     void timer_callback();
 };

@@ -7,16 +7,23 @@ endif ()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-# uncomment the following section in order to fill in
-# further dependencies manually.
-# find_package(<dependency> REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(std_msgs REQUIRED)
+#find_package(std_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
 
-include_directories(include)
+find_package(Navio2)
 
-add_executable(sensors src/sensors_node.cpp src/sensors.cpp)
-ament_target_dependencies(sensors rclcpp std_msgs)
+include_directories(
+        include
+        ${Navio2_INCLUDE_DIRS}
+)
+
+add_executable(sensors
+        src/sensors_node.cpp
+        src/sensors.cpp
+        src/imu.cpp)
+target_link_libraries(sensors ${Navio2_LIBRARIES})
+ament_target_dependencies(sensors rclcpp sensor_msgs)
 
 install(TARGETS
         sensors

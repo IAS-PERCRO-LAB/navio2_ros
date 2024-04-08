@@ -1,4 +1,4 @@
-FROM ros:humble-ros-core
+FROM ros:humble-ros-base
 # Use ros:humble-ros-base if you want colcon too!
 
 ARG USER=docker
@@ -10,7 +10,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install --no-install-recommends -y \
         vim git build-essential tmux udev htop \
         python3-jinja2 python3-setuptools python3-venv \
-        curl wget unzip bash-completion lsb-release
+        curl wget unzip bash-completion lsb-release sudo
 #    && apt-get -y autoremove && apt-get clean
 
 ENV TZ=Europe/Rome
@@ -33,6 +33,13 @@ RUN addgroup --gid $GROUP_ID ${USER} && \
 #         source ./install/local_setup.bash && \
 #         EXTERNAL_SKIP='librealsense2' ros2 run micro_ros_setup create_agent_ws.sh && \
 #         ros2 run micro_ros_setup build_agent.sh"
+
+# Navio2
+RUN mkdir /deps && cd /deps && \
+    git clone https://github.com/IAS-PERCRO-LAB/Navio2.git && \
+    cd Navio2/C++/Navio && \
+    mkdir build && cd build && \
+    cmake .. && make && make install
 
 USER ${USER}
 RUN mkdir -p /home/${USER}/ws /home/${USER}/ws/src
