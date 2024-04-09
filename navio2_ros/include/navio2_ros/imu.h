@@ -9,7 +9,7 @@
  * - /dev/spidev0.3 (acc/gyro LSM9DS1)
  */
 
-#include "Navio2/MPU9250.h"
+#include "Common/MPU9250.h"
 #include "Navio2/LSM9DS1.h"
 
 namespace Navio2 {
