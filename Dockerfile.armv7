@@ -1,0 +1,17 @@
+FROM --platform=linux/arm/v7 ros/armv7:latest
+
+ARG USER=docker
+
+# Install dependencies
+USER root
+
+# Navio2
+RUN mkdir /deps && cd /deps && \
+    git clone https://github.com/IAS-PERCRO-LAB/Navio2.git && \
+    cd Navio2/C++/Navio && \
+    mkdir build && cd build && \
+    cmake .. && make && make install
+
+USER ${USER}
+
+# vim: set et fenc=utf-8 ff=unix ft=dockerfile sts=0 sw=2 ts=2 :
