@@ -16,12 +16,17 @@ public:
 
 private:
     Navio2::Imu imu_mpu_;
+    Navio2::Imu imu_lsm_;
 
     rclcpp::TimerBase::SharedPtr timer_;
     rclcpp::Publisher<ImuMsgAdapter>::SharedPtr publisher_imu_mpu_;
+    rclcpp::Publisher<ImuMsgAdapter>::SharedPtr publisher_imu_lsm_;
 
     void timer_callback();
 
-    void publish_imu_data(Navio2::InertialSensorType type, const ImuData& data);
+    void process_imu(Navio2::InertialSensorType type);
+
+    void publish_imu_data(Navio2::InertialSensorType type, const ImuData &data);
 };
+
 #endif //NAVIO2_ROS_SENSORS_H
