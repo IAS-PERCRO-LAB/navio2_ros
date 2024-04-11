@@ -20,6 +20,8 @@ Imu::Imu(InertialSensorType type) {
     if (!sensor->probe()) {
         throw std::runtime_error("Sensor not enabled");
     }
+
+    sensor->initialize();
 }
 
 void Imu::read_data(std::array<double, 3> &accel, std::array<double, 3> &gyro) {
