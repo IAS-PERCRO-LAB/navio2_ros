@@ -16,9 +16,9 @@ NavioSensors::NavioSensors()
     // Timers
     timer_ = this->create_wall_timer(
             500ms, [this] { timer_callback(); });
-}
 
-NavioSensors::~NavioSensors() {}
+    RCLCPP_DEBUG(this->get_logger(), "navio_sensors node started");
+}
 
 void NavioSensors::timer_callback() {
     // check for any subscriber
@@ -36,5 +36,20 @@ void NavioSensors::timer_callback() {
 
     // TODO: covariances!
 
+    publish_imu_data(Navio2::InertialSensorType::MPU9250, data);
+}
+
+void NavioSensors::publish_imu_data(Navio2::InertialSensorType type, const ImuData &data) {
+    RCLCPP_DEBUG(this->get_logger(),
+                 "Publishing IMU data: linear_acceleration: [%f, %f, %f], angular_velocity: [%f, %f, %f]",
+                 data.linear_acceleration[0], data.linear_acceleration[1], data.linear_acceleration[2],
+                 data.angular_velocity[0], data.angular_velocity[1], data.angular_velocity[2]);
+    switch (type) {
+        case Navio2::InertialSensorType::MPU9250:
+            publisher_imu_mpu_->publish(data);
+            break;
+        default:
+            RCLCPP_ERROR(this->get_logger(), "Unknown IMU type: %d", static_cast<int>(type));
+    }
     publisher_imu_mpu_->publish(data);
 }

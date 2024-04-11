@@ -12,7 +12,7 @@ class NavioSensors : public rclcpp::Node {
 public:
     NavioSensors();
 
-    ~NavioSensors() override;
+    ~NavioSensors() override = default;
 
 private:
     Navio2::Imu imu_mpu_;
@@ -21,5 +21,7 @@ private:
     rclcpp::Publisher<ImuMsgAdapter>::SharedPtr publisher_imu_mpu_;
 
     void timer_callback();
+
+    void publish_imu_data(Navio2::InertialSensorType type, const ImuData& data);
 };
 #endif //NAVIO2_ROS_SENSORS_H

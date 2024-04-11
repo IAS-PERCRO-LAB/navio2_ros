@@ -2,7 +2,6 @@
 
 #include <memory>
 #include <stdexcept>
-#include <rclcpp/rclcpp.hpp>
 
 using namespace Navio2;
 
@@ -21,7 +20,6 @@ Imu::Imu(InertialSensorType type) {
     if (!sensor->probe()) {
         throw std::runtime_error("Sensor not enabled");
     }
-    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "IMU enabled");
 }
 
 void Imu::read_data(std::array<double, 3> &accel, std::array<double, 3> &gyro) {
