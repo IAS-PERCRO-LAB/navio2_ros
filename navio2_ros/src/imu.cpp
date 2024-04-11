@@ -25,18 +25,21 @@ Imu::Imu(InertialSensorType type) {
 }
 
 void Imu::read_data(std::array<double, 3> &accel, std::array<double, 3> &gyro) {
+    std::array<float, 3> accel_float{}, gyro_float{};
+
     sensor->update();
-    sensor->read_accelerometer(reinterpret_cast<float *>(&accel[0]),
-                               reinterpret_cast<float *>(&accel[1]),
-                               reinterpret_cast<float *>(&accel[2]));
-    sensor->read_gyroscope(reinterpret_cast<float *>(&gyro[0]),
-                           reinterpret_cast<float *>(&gyro[1]),
-                           reinterpret_cast<float *>(&gyro[2]));
+    sensor->read_accelerometer(&accel_float[0], &accel_float[1], &accel_float[2]);
+    sensor->read_gyroscope(&gyro_float[0], &gyro_float[1], &gyro_float[2]);
+
+    accel = {accel_float[0], accel_float[1], accel_float[2]};
+    gyro = {gyro_float[0], gyro_float[1], gyro_float[2]};
 }
 
 void Imu::read_data(std::array<double, 3> &accel, std::array<double, 3> &gyro, std::array<double, 3> &mag) {
+    std::array<float, 3> mag_float{};
+
     Imu::read_data(accel, gyro);
-    sensor->read_magnetometer(reinterpret_cast<float *>(&mag[0]),
-                              reinterpret_cast<float *>(&mag[1]),
-                              reinterpret_cast<float *>(&mag[2]));
+
+    sensor->read_magnetometer(&mag_float[0], &mag_float[1], &mag_float[2]);
+    mag = {mag_float[0], mag_float[1], mag_float[2]};
 }
