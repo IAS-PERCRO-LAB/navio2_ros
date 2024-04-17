@@ -40,7 +40,7 @@
 //    postAttachCommand: "source /opt/ros/humble/setup.bash && source /home/docker/ws/install/local_setup.sh",
     "mounts": [
         "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind,consistency=cached",
-        "source=/dev/dri,target=/dev/dri,type=bind,consistency=cached",
+        "source=/dev/dri,target=/dev/dri,type=bind,consistency=cached"
 //        "source=${localWorkspaceFolder}/ws/build,target=/home/docker/ws/build,type=bind",
 //        "source=${localWorkspaceFolder}/ws/install,target=/home/docker/ws/install,type=bind",
 //        "source=${localWorkspaceFolder}/ws/log,target=/home/docker/ws/log,type=bind",

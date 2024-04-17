@@ -10,7 +10,7 @@ NavioSensors::NavioSensors()
         : Node("navio_sensors"),
           imu_mpu_(Navio2::InertialSensorType::MPU9250),
           imu_lsm_(Navio2::InertialSensorType::LSM9DS1) {
-    // TODO: make the other one too and enable them with a parameter
+    // TODO: enable IMUs with parameters
 
     // Publishers
     publisher_imu_mpu_ = this->create_publisher<ImuMsgAdapter>("imu/mpu", rclcpp::QoS(10).best_effort());

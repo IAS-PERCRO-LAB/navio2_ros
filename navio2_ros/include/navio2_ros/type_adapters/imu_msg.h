@@ -6,7 +6,7 @@
 #include <sensor_msgs/msg/imu.hpp>
 
 struct ImuData {
-    rclcpp::Time timestamp; // TODO: this could be improved by using std::chrono::time_point
+    rclcpp::Time timestamp;
     std::string frame_id;
     std::array<double, 3> linear_acceleration;
     std::array<double, 3> angular_velocity;
