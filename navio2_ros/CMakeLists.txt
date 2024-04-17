@@ -28,12 +28,8 @@ add_executable(sensors
 target_link_libraries(sensors ${Navio2_LIBRARIES})
 ament_target_dependencies(sensors rclcpp sensor_msgs)
 
-add_executable(imu_ex src/imu_example.cpp)
-target_link_libraries(imu_ex ${Navio2_LIBRARIES})
-
 install(TARGETS
         sensors
-        imu_ex
         DESTINATION lib/${PROJECT_NAME})
 
 if (BUILD_TESTING)
