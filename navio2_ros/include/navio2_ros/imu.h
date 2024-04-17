@@ -12,6 +12,8 @@
 #include "Common/MPU9250.h"
 #include "Navio2/LSM9DS1.h"
 
+#include <memory>
+
 namespace Navio2 {
     enum class InertialSensorType {
         MPU9250,
@@ -22,14 +24,12 @@ namespace Navio2 {
     public:
         explicit Imu(InertialSensorType type);
 
-        void read_accelerometer(float *ax, float *ay, float *az);
+        void read_data(std::array<double, 3> &accel, std::array<double, 3> &gyro);
 
-        void read_gyroscope(float *gx, float *gy, float *gz);
-
-        void read_magnetometer(float *mx, float *my, float *mz);
+        void read_data(std::array<double, 3> &accel, std::array<double, 3> &gyro, std::array<double, 3> &mag);
 
     private:
-        InertialSensor *sensor;
+        std::unique_ptr<InertialSensor> sensor;
     };
 }
 

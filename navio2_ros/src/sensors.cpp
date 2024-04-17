@@ -7,40 +7,77 @@
 using namespace std::chrono_literals;
 
 NavioSensors::NavioSensors()
-        : Node("navio_sensors"), imu_mpu_(Navio2::InertialSensorType::MPU9250) {
-    // TODO: make the other one too and enable them with a parameter
+        : Node("navio_sensors"),
+          imu_mpu_(Navio2::InertialSensorType::MPU9250),
+          imu_lsm_(Navio2::InertialSensorType::LSM9DS1) {
+    // TODO: enable IMUs with parameters
 
     // Publishers
-    publisher_imu_mpu_ = this->create_publisher<sensor_msgs::msg::Imu>("imu/mpu", rclcpp::QoS(10).best_effort());
+    publisher_imu_mpu_ = this->create_publisher<ImuMsgAdapter>("imu/mpu", rclcpp::QoS(10).best_effort());
+    publisher_imu_lsm_ = this->create_publisher<ImuMsgAdapter>("imu/lsm", rclcpp::QoS(10).best_effort());
 
     // Timers
     timer_ = this->create_wall_timer(
             500ms, [this] { timer_callback(); });
+
+    RCLCPP_DEBUG(this->get_logger(), "navio_sensors node started");
 }
 
 void NavioSensors::timer_callback() {
-    // check for any subscriber
+    // IMU MPU9250
     if (publisher_imu_mpu_->get_subscription_count() == 0) {
-        RCLCPP_DEBUG(this->get_logger(), "No subscribers, not publishing");
-        return;
+        RCLCPP_DEBUG(this->get_logger(), "No subscribers, not processing IMU MPU9250 data");
+    } else {
+        process_imu(Navio2::InertialSensorType::MPU9250);
     }
 
-    auto message = sensor_msgs::msg::Imu();
-    message.header.stamp = this->now();
-    message.header.frame_id = "navio"; // TODO: set the frame id according to the sensor
-    imu_mpu_.read_accelerometer(reinterpret_cast<float *>(&message.linear_acceleration.x),
-                            reinterpret_cast<float *>(&message.linear_acceleration.y),
-                            reinterpret_cast<float *>(&message.linear_acceleration.z));
-    imu_mpu_.read_gyroscope(reinterpret_cast<float *>(&message.angular_velocity.x),
-                        reinterpret_cast<float *>(&message.angular_velocity.y),
-                        reinterpret_cast<float *>(&message.angular_velocity.z));
+    // IMU LSM9DS1
+    if (publisher_imu_lsm_->get_subscription_count() == 0) {
+        RCLCPP_DEBUG(this->get_logger(), "No subscribers, not processing IMU LSM9DS1 data");
+    } else {
+        process_imu(Navio2::InertialSensorType::LSM9DS1);
+    }
+}
 
-    // TODO: magnetic field with http://docs.ros.org/en/noetic/api/sensor_msgs/html/msg/MagneticField.html
+void NavioSensors::process_imu(Navio2::InertialSensorType type) {
+    auto imu_data = ImuData();
+    imu_data.frame_id = "navio"; // TODO: set the frame id according to the sensor
+    imu_data.timestamp = this->now();
+
+    switch (type) {
+        case Navio2::InertialSensorType::MPU9250:
+            imu_mpu_.read_data(imu_data.linear_acceleration, imu_data.angular_velocity);
+            break;
+        case Navio2::InertialSensorType::LSM9DS1:
+            imu_lsm_.read_data(imu_data.linear_acceleration, imu_data.angular_velocity);
+            break;
+        default:
+            RCLCPP_ERROR(this->get_logger(), "Unknown IMU type: %d", static_cast<int>(type));
+            return;
+    }
+
+    // TODO: magnetic fields with https://docs.ros2.org/latest/api/sensor_msgs/msg/MagneticField.html
 
     // TODO: covariances!
 
-    RCLCPP_INFO(this->get_logger(), "Publishing imu data [%f %f %f] [%f %f %f]",
-                message.linear_acceleration.x, message.linear_acceleration.y, message.linear_acceleration.z,
-                message.angular_velocity.x, message.angular_velocity.y, message.angular_velocity.z);
-    publisher_imu_mpu_->publish(message);
+    publish_imu_data(type, imu_data);
+}
+
+void NavioSensors::publish_imu_data(Navio2::InertialSensorType type, const ImuData &data) {
+    RCLCPP_DEBUG(this->get_logger(),
+                 "Publishing IMU %d data: linear_acceleration: [%f, %f, %f], angular_velocity: [%f, %f, %f]",
+                 static_cast<int>(type),
+                 data.linear_acceleration[0], data.linear_acceleration[1], data.linear_acceleration[2],
+                 data.angular_velocity[0], data.angular_velocity[1], data.angular_velocity[2]);
+    switch (type) {
+        case Navio2::InertialSensorType::MPU9250:
+            publisher_imu_mpu_->publish(data);
+            break;
+        case Navio2::InertialSensorType::LSM9DS1:
+            publisher_imu_lsm_->publish(data);
+            break;
+        default:
+            RCLCPP_ERROR(this->get_logger(), "Unknown IMU type: %d", static_cast<int>(type));
+    }
+    publisher_imu_mpu_->publish(data);
 }
