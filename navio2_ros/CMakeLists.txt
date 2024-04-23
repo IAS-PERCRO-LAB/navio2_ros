@@ -26,6 +26,7 @@ add_executable(sensors
         src/sensors.cpp
         src/imu.cpp
         src/baro_temp.cpp
+        src/gps.cpp
 )
 target_link_libraries(sensors ${Navio2_LIBRARIES})
 ament_target_dependencies(sensors rclcpp sensor_msgs)
