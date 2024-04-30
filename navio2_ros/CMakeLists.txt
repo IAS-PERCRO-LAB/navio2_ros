@@ -11,6 +11,8 @@ endif ()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_lifecycle REQUIRED)
+#find_package(lifecycle_msgs REQUIRED)
 #find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 
@@ -24,15 +26,30 @@ include_directories(
 add_executable(sensors
         src/sensors_node.cpp
         src/sensors.cpp
-        src/imu.cpp
-        src/baro_temp.cpp
-        src/gps.cpp
+        src/sensors/imu.cpp
+        src/sensors/baro_temp.cpp
+        src/sensors/gps.cpp
 )
 target_link_libraries(sensors ${Navio2_LIBRARIES})
-ament_target_dependencies(sensors rclcpp sensor_msgs)
+ament_target_dependencies(sensors
+        rclcpp
+        sensor_msgs
+)
+
+add_executable(imu_mpu
+        src/node_imu_mpu.cpp
+        src/sensors/imu.cpp
+)
+target_link_libraries(imu_mpu ${Navio2_LIBRARIES})
+ament_target_dependencies(imu_mpu
+        rclcpp
+        rclcpp_lifecycle
+        sensor_msgs
+)
 
 install(TARGETS
         sensors
+        imu_mpu
         DESTINATION lib/${PROJECT_NAME})
 
 if (BUILD_TESTING)

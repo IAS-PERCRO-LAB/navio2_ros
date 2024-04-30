@@ -1,11 +1,14 @@
-#include "navio2_ros/imu.h"
+#include "navio2_ros/sensors/imu.h"
 
 #include <memory>
 #include <stdexcept>
+#include <iostream>
 
 using namespace Navio2;
 
 Imu::Imu(InertialSensorType type) {
+    std::cout << "Creating Imu object... ";
+
     switch (type) {
         case InertialSensorType::MPU9250:
             sensor = std::unique_ptr<InertialSensor>{new MPU9250()};
@@ -22,6 +25,8 @@ Imu::Imu(InertialSensorType type) {
     }
 
     sensor->initialize();
+
+    std::cout << "done!" << std::endl;
 }
 
 void Imu::read_data(std::array<double, 3> &accel, std::array<double, 3> &gyro) {

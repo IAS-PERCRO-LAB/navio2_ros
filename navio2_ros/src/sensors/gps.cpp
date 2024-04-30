@@ -1,7 +1,9 @@
-#include "navio2_ros/gps.h"
+#include "navio2_ros/sensors/gps.h"
 
 namespace Navio2 {
     Gps::Gps() : fixed(false), fix_status(UNKNOWN) {
+        std::cout << "Creating Gps object...";
+
         // testConnection() waits for a ubx protocol message and checks if there's at least one correct message in the first 300 symbols
         if (!sensor_.testConnection()) {
             throw std::runtime_error("Ublox test not passed\nAbort program!\n");
@@ -10,6 +12,8 @@ namespace Navio2 {
         if (!sensor_.configureSolutionRate(1000)) {
             throw std::runtime_error("Setting new rate: FAILED\n");
         }
+
+        std::cout << "done!" << std::endl;
     }
 
     bool Gps::read_data() {

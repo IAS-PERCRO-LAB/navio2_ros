@@ -1,9 +1,9 @@
 #ifndef NAVIO2_ROS_SENSORS_H
 #define NAVIO2_ROS_SENSORS_H
 
-#include "navio2_ros/imu.h"
-#include "navio2_ros/baro_temp.h"
-#include "navio2_ros/gps.h"
+#include "navio2_ros/sensors/imu.h"
+#include "navio2_ros/sensors/baro_temp.h"
+#include "navio2_ros/sensors/gps.h"
 
 #include <rclcpp/rclcpp.hpp>
 
