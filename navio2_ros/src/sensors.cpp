@@ -58,7 +58,7 @@ void NavioSensors::timer_callback() {
     }
 
     // GPS
-    if (publisher_gps_->get_subscription_count() == 0 || publisher_gps_ublox_status_->get_subscription_count() == 0) {
+    if (publisher_gps_->get_subscription_count() == 0 && publisher_gps_ublox_status_->get_subscription_count() == 0) {
         RCLCPP_DEBUG(this->get_logger(), "No subscribers, not processing GPS data");
     } else {
         bool some_update = gps_.read_data();
