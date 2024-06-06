@@ -31,11 +31,12 @@ add_executable(sensors
 target_link_libraries(sensors ${Navio2_LIBRARIES})
 ament_target_dependencies(sensors rclcpp sensor_msgs)
 
-add_executable(pwm src/pwm_example.cpp)
-target_link_libraries(sensors ${Navio2_LIBRARIES})
+add_executable(pwm_example src/pwm_example.cpp)
+target_link_libraries(pwm_example ${Navio2_LIBRARIES})
 
 install(TARGETS
         sensors
+        pwm_example
         DESTINATION lib/${PROJECT_NAME})
 
 if (BUILD_TESTING)
